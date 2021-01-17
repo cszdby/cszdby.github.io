@@ -93,13 +93,27 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Linux部分：系统中selinx需要关闭； 并且要确保&#x2F;tmp目录的权限为1777">
 <meta property="og:locale">
-<meta property="og:image" content="http://example.com/images/frist.png">
+<meta property="og:image" content="http://example.com/images/LNMP/frist.png">
+<meta property="og:image" content="http://example.com/images/LNMP/second.png">
+<meta property="og:image" content="http://example.com/images/LNMP/third.png">
+<meta property="og:image" content="http://example.com/images/LNMP/fourth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/fifth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/sixth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/seventh.png">
+<meta property="og:image" content="http://example.com/images/LNMP/eighth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/ninth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/tenth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/eleventh.png">
+<meta property="og:image" content="http://example.com/images/LNMP/twelfth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/thirteenth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/fourteenth.png">
+<meta property="og:image" content="http://example.com/images/LNMP/fifteenth.png">
 <meta property="article:published_time" content="2021-01-17T09:26:34.000Z">
-<meta property="article:modified_time" content="2021-01-17T09:59:58.843Z">
+<meta property="article:modified_time" content="2021-01-17T12:18:47.382Z">
 <meta property="article:author" content="Cszdby">
 <meta property="article:tag" content="博客搭建">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/frist.png">
+<meta name="twitter:image" content="http://example.com/images/LNMP/frist.png">
 
 
 
@@ -454,7 +468,76 @@
         <hr>
 <h1 id="Linux部分："><a href="#Linux部分：" class="headerlink" title="Linux部分："></a>Linux部分：</h1><pre><code>系统中selinx需要关闭；
 并且要确保/tmp目录的权限为1777</code></pre>
-<p><img src="/images/frist.png" alt="frist"></p>
+<p><img src="/images/LNMP/frist.png" alt="frist"></p>
+<a id="more"></a>
+<hr>
+<h1 id="Nginx部分："><a href="#Nginx部分：" class="headerlink" title="Nginx部分："></a>Nginx部分：</h1><pre><code>yum install nginx            ===============下载nginx
+vim /etc/nginx/nginx.conf        =========修改nginx的配置文件（注意使用者改成了www）</code></pre>
+<p><img src="/images/LNMP/second.png" alt="second"></p>
+<pre><code>systemctl start nginx启动
+systemctl enable nginx 设置成开机自启
+mysql部分（mysql下载太慢了，用mariadb代替）：
+yum install mariadb-server     ===========下载mariadb
+systemctl start mariadb         =============启动mariadb
+systemctl enable mariadb    ============开机自启数据库
+启动完成后可以输入mysql查看是否能进入数据库，如果成功ctrl+d退出数据库开始创建数据库密码信息：
+mysqladmin -u root password &#39;123456&#39;    ========设置登录mariadb的登录用户为root密码为123456；
+使用mysql -uroot -p123456登录</code></pre>
+<p><img src="/images/LNMP/third.png" alt="third"></p>
+<pre><code> php部分：
+rpm-qa ｜grep php        =======================检查系统是否有自带的php
+yum remove php-mysql php php-fpm php-common        ====移除自带的php部分
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+yum install php71w php71w-cli php71w-common php71w-devel php71w-embedded  php71w-gd php71w-mcrypt     php71w-mbstring php71w-pdo php71w-xml php71w-fpm php71w-mysqlnd php71w-opcache  php71w-pecl-memcached     php71w-pecl-redis php71w-pecl-mongodb</code></pre>
+<hr>
+<h1 id="更新yum源并下载php相关"><a href="#更新yum源并下载php相关" class="headerlink" title="更新yum源并下载php相关"></a>更新yum源并下载php相关</h1><p>vim /etc/php-fpm.d/<a target="_blank" rel="noopener" href="http://www.conf/">www.conf</a>            ====================修改配置文件</p>
+<p><img src="/images/LNMP/fourth.png" alt="fourth"></p>
+<pre><code>将原先的apache用户修改为www用户与nginx的用户保持一致。
+至此，启动php服务
+systemctl start php-fpm</code></pre>
+<hr>
+<pre><code>Nginx和php之间建立关系：
+通过fastcgi建立接口：首先在/html/blog/blog.conf中做如下配置</code></pre>
+<p><img src="/images/LNMP/fifth.png" alt="fifth"></p>
+<pre><code>保存退出后
+nginx -t =================检查是否有语法错误
+nginx -s reload =============重启nginx服务
+进行访问测试：
+咱们在/html/blog目录下创建一个test_php.php文件</code></pre>
+<p><img src="/images/LNMP/sixth.png" alt="sixth"></p>
+<pre><code>保存退出后在hosts中做映射尝试访问该网站：blog.ceshiu.com/test_php.php</code></pre>
+<p><img src="/images/LNMP/seventh.png" alt="seventh"></p>
+<pre><code>访问后能看到以上的页面就说明php已经和nginx建立联系了～</code></pre>
+<hr>
+<h1 id="php和mysql之间建立联系："><a href="#php和mysql之间建立联系：" class="headerlink" title="php和mysql之间建立联系："></a>php和mysql之间建立联系：</h1><pre><code>依旧在/html/blog目录下创建test_mysql.php</code></pre>
+<p><img src="/images/LNMP/eighth.png" alt="eighth"></p>
+<pre><code>同样，在本机网站上进行访问测试：blog.ceshi.com/test_mysql.php</code></pre>
+<p><img src="/images/LNMP/ninth.png" alt="ninth"><br>    看到这样的画面就表示php和mysql的连接已经创建成功～</p>
+<hr>
+<pre><code>此时我们的lnmp之间的联系已经完成，接下来可以在开源网站上下载相关的代码信息
+这里我使用的是wordpress博客的代码：</code></pre>
+<p><img src="/images/LNMP/tenth.png" alt="tenth"></p>
+<pre><code>wget https://wordpress.org/latest.tar.gz ================直接在虚拟机上下载该文件（直接下载该文件上传到虚拟机中也是可以的）
+tar zxvf  latest.tar.gz=============解压下载后的文件会看到一个wordpress的文件夹进入后有以下文件</code></pre>
+<p><img src="/images/LNMP/eleventh.png" alt="eleventh"></p>
+<pre><code>这里要注意我们的nginx下root定义的站点目录是/html/blog，所以咱们需要把wordpress里面的文件全部移动到站点目录下面
+mv ./wordpress/*    /html/blog=================移动wordpress下所有文件到站点目录
+chown -R /html/blog========================修改blog目录下所有文件的属主属组为www    
+此时访问我们的网页blog.ceshi.com就会看到这样的页面</code></pre>
+<p><img src="/images/LNMP/twelfth.png" alt="twelfth"></p>
+<pre><code>点击lets go继续会让我们提交数据库信息用来存储</code></pre>
+<p><img src="/images/LNMP/thirteenth.png" alt="thirteenth"></p>
+<pre><code>这里会让我们提供一个数据库：
+为了好记将数据库名字和用户都设置为wordpress，密码123456
+进入数据库：
+mysq -uroot -p123456=================进入数据库
+create database . wordpress;============创建wordpress数据库
+grant all on wprdpress.* to &#39;wordpress&#39;@&#39;localhost&#39; identified by &#39;123456&#39;;
+创建一个名为wordpress密码为123456的用户，并将权限设为所有。
+检查是否创建成功：</code></pre>
+<h2 id><a href="#" class="headerlink" title></a><img src="/images/LNMP/fourteenth.png" alt="fourteenth"></h2><pre><code>最后打开博客就可以进行访问了（这个是在虚拟机上映射，如果想真正搭建可供访问的博客需要购买服务器和域名）</code></pre>
+<p><img src="/images/LNMP/fifteenth.png" alt="fifteenth"></p>
 
       
     </div>
@@ -549,31 +632,32 @@
 
     <div class="post-spread">
       
-        <!-- JiaThis Button BEGIN -->
-<div class="jiathis_style">
-<span class="jiathis_txt">分享到：</span>
-<a class="jiathis_button_fav">收藏夹</a>
-<a class="jiathis_button_copy">复制网址</a>
-<a class="jiathis_button_email">邮件</a>
-<a class="jiathis_button_weixin">微信</a>
-<a class="jiathis_button_qzone">QQ空间</a>
-<a class="jiathis_button_tqq">腾讯微博</a>
-<a class="jiathis_button_douban">豆瓣</a>
-<a class="jiathis_button_share">一键分享</a>
+        
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "1",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      },
+      "slide": {
+        "bdImg": "5",
+        "bdPos": "left",
+        "bdTop": "100"
+      }
+    }
+  </script>
 
-<a href="http://www.jiathis.com/share?uid=2140465" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
-<a class="jiathis_counter_style"></a>
-</div>
-<script type="text/javascript" >
-var jiathis_config={
-  data_track_clickback:true,
-  summary:"",
-  shortUrl:false,
-  hideMore:false
-}
+<script>
+	  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
 </script>
-<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=" charset="utf-8"></script>
-<!-- JiaThis Button END -->
+
       
     </div>
   </div>
@@ -729,7 +813,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux%E9%83%A8%E5%88%86%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">Linux部分：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux%E9%83%A8%E5%88%86%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">Linux部分：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nginx%E9%83%A8%E5%88%86%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">Nginx部分：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0yum%E6%BA%90%E5%B9%B6%E4%B8%8B%E8%BD%BDphp%E7%9B%B8%E5%85%B3"><span class="nav-number">3.</span> <span class="nav-text">更新yum源并下载php相关</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#php%E5%92%8Cmysql%E4%B9%8B%E9%97%B4%E5%BB%BA%E7%AB%8B%E8%81%94%E7%B3%BB%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">php和mysql之间建立联系：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">4.1.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
             
 
           </div>
